@@ -763,6 +763,7 @@ public class Volume implements java.io.Serializable {
 				Integer.toString(Main.writeTimeoutSeconds));
 		root.setAttribute("compress-metadata", Boolean.toString(Main.COMPRESS_METADATA));
 		root.setAttribute("sync-files", Boolean.toString(Main.syncDL));
+		root.setAttribute("block-size", Integer.toString(this.getBlockSize()));
 		for (BlockDev blk : this.devices) {
 			Element el = blk.getElement();
 			doc.adoptNode(el);
