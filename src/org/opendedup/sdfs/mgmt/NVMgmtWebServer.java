@@ -84,7 +84,7 @@ public class NVMgmtWebServer implements Container {
                 qry = splitQuery(null);
             }
             boolean cmdReq = reqPath.getPath().trim().equalsIgnoreCase("/");
-            this.volumeInfoMap.forEach((k,v) -> System.out.println(k + " = " + v ));
+
 
         } catch (Exception e) {
             SDFSLogger.getLog().error("unable to satify request ", e);
@@ -134,6 +134,7 @@ public class NVMgmtWebServer implements Container {
             connection.connect(address);
 
         initVolumnMap();
+        this.volumeInfoMap.forEach((k,v) -> System.out.println(k + " = " + v ));
         System.out.println("###################### NetVault SSL Management WebServer Started at "
                 + address.toString() + " #########################");
     }
