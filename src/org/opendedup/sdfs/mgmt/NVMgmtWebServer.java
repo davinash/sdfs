@@ -109,7 +109,7 @@ public class NVMgmtWebServer implements Container {
 
             VolumnInfo volumnInfo = null;
             if (volumeName != null) {
-                parseVolumeConfigFile(new File("/etc/sdfs/" + volumeName.trim() + "-volume-cfg.xml"));
+                volumnInfo = parseVolumeConfigFile(new File("/etc/sdfs/" + volumeName.trim() + "-volume-cfg.xml"));
             }
 
             System.out.println("cmd=" + cmd + " options=" + cmdOptions + " vol-name=" + volumeName);
@@ -138,6 +138,7 @@ public class NVMgmtWebServer implements Container {
                                 System.out.println(response1.getStatusLine());
                                 HttpEntity entity1 = response1.getEntity();
                                 String responseXml = EntityUtils.toString(response1.getEntity());
+                                System.out.println("responseXml = " + responseXml);
                                 // do something useful with the response body
                                 // and ensure it is fully consumed
                                 EntityUtils.consume(entity1);
