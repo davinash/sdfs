@@ -137,6 +137,7 @@ public class NVMgmtWebServer implements Container {
                             try {
                                 System.out.println(response1.getStatusLine());
                                 HttpEntity entity1 = response1.getEntity();
+                                String responseXml = EntityUtils.toString(response1.getEntity());
                                 // do something useful with the response body
                                 // and ensure it is fully consumed
                                 EntityUtils.consume(entity1);
@@ -144,6 +145,7 @@ public class NVMgmtWebServer implements Container {
                                 response1.close();
                             }
                         } catch (IOException e) {
+                            e.printStackTrace();
                             result.setAttribute("status", "failed");
                             result.setAttribute("msg", e.toString());
                             SDFSLogger.getLog().warn("version", e);
@@ -156,6 +158,7 @@ public class NVMgmtWebServer implements Container {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("unable to satify request " + e);
             response.setCode(500);
             try {
