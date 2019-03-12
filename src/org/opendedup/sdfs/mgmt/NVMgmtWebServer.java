@@ -85,6 +85,15 @@ public class NVMgmtWebServer implements Container {
             }
             boolean cmdReq = reqPath.getPath().trim().equalsIgnoreCase("/");
 
+            String cmd = qry.get("cmd");
+            if (cmd != null)
+                cmd = cmd.toLowerCase();
+
+            String cmdOptions = null;
+            if (qry.containsKey("options"))
+                cmdOptions = qry.get("options");
+
+            System.out.println("cmd=" + cmd +  " options=" + cmdOptions);
 
         } catch (Exception e) {
             SDFSLogger.getLog().error("unable to satify request ", e);
@@ -175,6 +184,7 @@ public class NVMgmtWebServer implements Container {
         }
         Element cli = (Element) doc.getElementsByTagName("sdfscli").item(0);
         volumnInfo.setPort(Integer.parseInt(cli.getAttribute("port")));
+        volumnInfo.setListenAddrss(cli.getAttribute("listen-address"));
         return volumnInfo;
     }
 }

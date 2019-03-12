@@ -3,6 +3,9 @@ package org.opendedup.sdfs.mgmt;
 public class VolumnInfo {
     private String version;
     private int port;
+    private String listenAddrss;
+
+
     public VolumnInfo() {
     }
 
@@ -19,6 +22,7 @@ public class VolumnInfo {
         return "VolumnInfo{" +
                 "version='" + version + '\'' +
                 ", port=" + port +
+                ", listenAddrss='" + listenAddrss + '\'' +
                 '}';
     }
 
@@ -28,5 +32,13 @@ public class VolumnInfo {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getListenAddrss() {
+        return listenAddrss;
+    }
+
+    public void setListenAddrss(String listenAddrss) {
+        this.listenAddrss = listenAddrss;
     }
 }
