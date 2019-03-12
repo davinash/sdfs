@@ -84,7 +84,7 @@ public class NVMgmtWebServer implements Container {
                 qry = splitQuery(null);
             }
             boolean cmdReq = reqPath.getPath().trim().equalsIgnoreCase("/");
-            this.volumeInfoMap.keySet().forEach(k -> System.out.println(k));
+            this.volumeInfoMap.forEach((k,v) -> System.out.println(k + " = " + v ));
 
         } catch (Exception e) {
             SDFSLogger.getLog().error("unable to satify request ", e);
@@ -151,7 +151,7 @@ public class NVMgmtWebServer implements Container {
 
             for (File file : files) {
                 String fileName = file.getName();
-                String volName =  fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
+                String volName = fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
                 volumeInfoMap.put(volName, parseVolumeConfigFile(file));
             }
         } catch (Exception e) {
@@ -172,8 +172,8 @@ public class NVMgmtWebServer implements Container {
             version = doc.getDocumentElement().getAttribute("version");
             volumnInfo.setVersion(version);
         }
-        Element volume = (Element) doc.getElementsByTagName("volume").item(0);
-        volumnInfo.setSdfsVolume(new Volume(volume, file.getPath()));
+        Element cli = (Element) doc.getElementsByTagName("sdfscli").item(0);
+        volumnInfo.setPort(Integer.parseInt(cli.getAttribute("port")));
         return volumnInfo;
     }
 }
