@@ -64,9 +64,10 @@ public class MgmtServerConnection {
 				prot = "https";
 			}
 			String req = prot + "://" + svr + ":" + pt + "/session/";
-			//SDFSLogger.getLog().info("Getting session for " + req);
+			System.out.println("Getting session for " + req);
 			method = new GetMethod(req);
 			int returnCode = client.executeMethod(method);
+			System.out.println("returnCode = " + returnCode);
 			if (returnCode != 200)
 				throw new IOException("Unable to process command "
 						+ method.getQueryString() + " return code was"
