@@ -114,7 +114,7 @@ public class NVMgmtWebServer implements Container {
         Router negotiator = new PathRouter(routes, new PingService());
 //        if (!Main.blockDev)
 //            io = new Io(Main.volume.getPath(), Main.volumeMountPoint);
-        Container container = new MgmtWebServer();
+        Container container = this;
         RouterContainer rn = new RouterContainer(container, negotiator, writeThreads);
         SocketProcessor server = new ContainerSocketProcessor(rn, new FileAllocator(1024 * 1024 * 8), writeThreads, 4);
         connection = new SocketConnection(server);
