@@ -44,6 +44,8 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -135,7 +137,11 @@ public class NVMgmtWebServer implements Container {
                                 MgmtServerConnection.initAuth("admin",
                                         MgmtServerConnection.server,
                                         MgmtServerConnection.port,MgmtServerConnection.useSSL);
-                        Document document = MgmtServerConnection.getResponse("/?cmd=version");
+
+                        StringBuilder sb = new StringBuilder();
+                        Formatter formatter = new Formatter(sb);
+                        formatter.format("cmd=version");
+                        Document document = MgmtServerConnection.getResponse(sb.toString());
                         System.out.println("document = " + document);
 
 //                        try {
