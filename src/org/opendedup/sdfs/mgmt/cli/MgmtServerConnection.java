@@ -161,6 +161,7 @@ public class MgmtServerConnection {
 			}
 			String req = prot + "://" + server + ":" + port + "/?" + url;
 			SDFSLogger.getLog().debug(req);
+			System.out.println("req = " + req);
 			method = new GetMethod(req);
 			int returnCode = client.executeMethod(method);
 			if(returnCode == 403) {
