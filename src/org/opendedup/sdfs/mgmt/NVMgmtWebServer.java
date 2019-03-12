@@ -1,11 +1,9 @@
 package org.opendedup.sdfs.mgmt;
 
 import org.opendedup.logging.SDFSLogger;
+import org.opendedup.sdfs.Main;
 import org.opendedup.sdfs.io.AbstractStreamMatcher;
 import org.opendedup.sdfs.io.Volume;
-import org.opendedup.sdfs.mgmt.websocket.DDBUpdate;
-import org.opendedup.sdfs.mgmt.websocket.MetaDataUpdate;
-import org.opendedup.sdfs.mgmt.websocket.MetaDataUpload;
 import org.opendedup.sdfs.mgmt.websocket.PingService;
 import org.opendedup.util.FindOpenPort;
 import org.simpleframework.common.buffer.FileAllocator;
@@ -21,8 +19,16 @@ import org.simpleframework.http.socket.service.Service;
 import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import javax.net.ssl.SSLContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
@@ -42,11 +48,11 @@ public class NVMgmtWebServer implements Container {
     public static int writeThreads = (short) (Runtime.getRuntime()
             .availableProcessors() * 3);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
         new NVMgmtWebServer().start();
     }
 
-    Map<String, Volume> volumeMap =  new HashMap<>();
+    Map<String, VolumnInfo> volumeInfoMap = new HashMap<>();
 
     private static Map<String, String> splitQuery(String query) {
 
@@ -78,6 +84,7 @@ public class NVMgmtWebServer implements Container {
                 qry = splitQuery(null);
             }
             boolean cmdReq = reqPath.getPath().trim().equalsIgnoreCase("/");
+            this.volumeInfoMap.keySet().forEach(k -> System.out.println(k));
 
         } catch (Exception e) {
             SDFSLogger.getLog().error("unable to satify request ", e);
@@ -100,7 +107,7 @@ public class NVMgmtWebServer implements Container {
         }
     }
 
-    private void start() throws IOException {
+    private void start() throws IOException, ParserConfigurationException, SAXException {
         SSLContext sslContext = null;
         Map<String, Service> routes = new HashMap<String, Service>();
         //routes.put("/metadatasocket", new MetaDataUpdate());
@@ -125,7 +132,47 @@ public class NVMgmtWebServer implements Container {
             connection.connect(address, sslContext);
         else
             connection.connect(address);
+
+        initVolumnMap();
         System.out.println("###################### NetVault SSL Management WebServer Started at "
                 + address.toString() + " #########################");
+    }
+
+    private void initVolumnMap() throws IOException, SAXException, ParserConfigurationException {
+        try {
+            File dir = new File("/etc/sdfs");
+            File[] files = dir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith("-volume-cfg.xml");
+                }
+            });
+            final String SUFFIX_TO_REMOVE = "-volume-cfg.xml";
+
+            for (File file : files) {
+                String fileName = file.getName();
+                String volName =  fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
+                volumeInfoMap.put(volName, parseVolumeConfigFile(file));
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private VolumnInfo parseVolumeConfigFile(File file) throws ParserConfigurationException, IOException, SAXException {
+        VolumnInfo volumnInfo = new VolumnInfo();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(file);
+        doc.getDocumentElement().normalize();
+        String version = "0.8.12";
+        SDFSLogger.getLog().info("############ Running SDFS Version " + Main.version);
+        if (doc.getDocumentElement().hasAttribute("version")) {
+            version = doc.getDocumentElement().getAttribute("version");
+            volumnInfo.setVersion(version);
+        }
+        Element volume = (Element) doc.getElementsByTagName("volume").item(0);
+        volumnInfo.setSdfsVolume(new Volume(volume, file.getPath()));
+        return volumnInfo;
     }
 }
