@@ -110,6 +110,7 @@ public class MgmtWebServer implements Container {
     public void handle(Request request, Response response) {
         try {
             //SDFSLogger.getLog().info(request.getTarget());
+            System.out.println("MgmtWebServer:: request = " + request);
             Path reqPath = request.getPath();
             String[] parts = request.getTarget().split("\\?");
             Map<String, String> qry = null;
@@ -132,6 +133,7 @@ public class MgmtWebServer implements Container {
             if (qry.containsKey("options"))
                 cmdOptions = qry.get("options");
             SDFSLogger.getLog().debug("cmd=" + cmd + " file=" + file + " options=" + cmdOptions);
+            System.out.println("cmd=" + cmd + " file=" + file + " options=" + cmdOptions);
 
             boolean auth = false;
             if (request.getTarget().startsWith(SESSION)) {
