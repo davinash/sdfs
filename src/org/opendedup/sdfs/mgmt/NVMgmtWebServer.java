@@ -129,7 +129,7 @@ public class NVMgmtWebServer implements Container {
                     case "version":
                         try {
                             CloseableHttpClient httpclient = HttpClients.createDefault();
-                            final String targetVolumeServer = "https://" + volumnInfo.getListenAddrss() + ":"
+                            final String targetVolumeServer = "http://" + volumnInfo.getListenAddrss() + ":"
                                     + volumnInfo.getPort();
                             System.out.println("targetVolumeServer = " + targetVolumeServer);
                             HttpGet httpGet = new HttpGet(targetVolumeServer + "?cmd=version");
