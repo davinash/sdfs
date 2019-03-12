@@ -132,7 +132,7 @@ public class NVMgmtWebServer implements Container {
                         MgmtServerConnection.port = volumnInfo.getPort();
                         MgmtServerConnection.useSSL = false;
                         MgmtServerConnection.baseHmac =
-                                MgmtServerConnection.initAuth(volumnInfo.getSdfsPassword(),
+                                MgmtServerConnection.initAuth("admin",
                                         MgmtServerConnection.server,
                                         MgmtServerConnection.port,true);
                         Document document = MgmtServerConnection.getResponse("/?cmd=version");
