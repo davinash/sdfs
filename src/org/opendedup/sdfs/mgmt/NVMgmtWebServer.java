@@ -74,6 +74,7 @@ public class NVMgmtWebServer implements Container {
 
     @Override
     public void handle(Request request, Response response) {
+        System.out.println("request = [" + request + "], response = [" + response + "]");
         try {
             Path reqPath = request.getPath();
             String[] parts = request.getTarget().split("\\?");
@@ -93,10 +94,10 @@ public class NVMgmtWebServer implements Container {
             if (qry.containsKey("options"))
                 cmdOptions = qry.get("options");
 
-            System.out.println("cmd=" + cmd +  " options=" + cmdOptions);
+            System.out.println("cmd=" + cmd + " options=" + cmdOptions);
 
         } catch (Exception e) {
-            SDFSLogger.getLog().error("unable to satify request ", e);
+            System.out.println("unable to satify request " + e);
             response.setCode(500);
             try {
                 PrintStream body = response.getPrintStream();
@@ -104,14 +105,14 @@ public class NVMgmtWebServer implements Container {
                 body.close();
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
-                SDFSLogger.getLog().error("unable to satify request ", e1);
+                System.out.println("unable to satify request " + e1);
             }
-            SDFSLogger.getLog().error("unable to satify request ", e);
+            System.out.println("unable to satify request " + e);
         } finally {
             try {
                 response.close();
             } catch (IOException e) {
-                SDFSLogger.getLog().debug("error when closing response", e);
+                System.out.println("error when closing response" + e);
             }
         }
     }
@@ -143,7 +144,7 @@ public class NVMgmtWebServer implements Container {
             connection.connect(address);
 
         initVolumnMap();
-        this.volumeInfoMap.forEach((k,v) -> System.out.println(k + " = " + v ));
+        this.volumeInfoMap.forEach((k, v) -> System.out.println(k + " = " + v));
         System.out.println("###################### NetVault SSL Management WebServer Started at "
                 + address.toString() + " #########################");
     }
