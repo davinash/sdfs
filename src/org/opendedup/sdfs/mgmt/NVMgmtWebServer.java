@@ -1,5 +1,13 @@
 package org.opendedup.sdfs.mgmt;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.opendedup.logging.SDFSLogger;
 import org.opendedup.sdfs.Main;
 import org.opendedup.sdfs.io.AbstractStreamMatcher;
@@ -19,6 +27,7 @@ import org.simpleframework.http.socket.service.Service;
 import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -94,7 +103,57 @@ public class NVMgmtWebServer implements Container {
             if (qry.containsKey("options"))
                 cmdOptions = qry.get("options");
 
-            System.out.println("cmd=" + cmd + " options=" + cmdOptions);
+            String volumeName = null;
+            if (qry.containsKey("vol-name"))
+                volumeName = qry.get("vol-name");
+
+            VolumnInfo volumnInfo = null;
+            if (volumeName != null) {
+                parseVolumeConfigFile(new File("/etc/sdfs/" + volumeName.trim() + "-volume-cfg.xml"));
+            }
+
+            System.out.println("cmd=" + cmd + " options=" + cmdOptions + " vol-name=" + volumeName);
+            if (cmdReq) {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder;
+                builder = factory.newDocumentBuilder();
+                DOMImplementation impl = builder.getDOMImplementation();
+                // Document.
+                Document doc = impl.createDocument(null, "result", null);
+                // Root element.
+                Element result = doc.getDocumentElement();
+                result.setAttribute("status", "failed");
+                result.setAttribute("msg", "could not authenticate user");
+
+                switch (cmd) {
+                    case "version":
+                        try {
+                            CloseableHttpClient httpclient = HttpClients.createDefault();
+                            final String targetVolumeServer = "https://" + volumnInfo.getListenAddrss() + ":"
+                                    + volumnInfo.getPort();
+                            System.out.println("targetVolumeServer = " + targetVolumeServer);
+                            HttpGet httpGet = new HttpGet(targetVolumeServer + "?cmd=version");
+                            CloseableHttpResponse response1 = httpclient.execute(httpGet);
+                            try {
+                                System.out.println(response1.getStatusLine());
+                                HttpEntity entity1 = response1.getEntity();
+                                // do something useful with the response body
+                                // and ensure it is fully consumed
+                                EntityUtils.consume(entity1);
+                            } finally {
+                                response1.close();
+                            }
+                        } catch (IOException e) {
+                            result.setAttribute("status", "failed");
+                            result.setAttribute("msg", e.toString());
+                            SDFSLogger.getLog().warn("version", e);
+                        }
+                        break;
+                    default:
+                        result.setAttribute("status", "failed");
+                        result.setAttribute("msg", "no command specified");
+                }
+            }
 
         } catch (Exception e) {
             System.out.println("unable to satify request " + e);
