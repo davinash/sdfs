@@ -103,13 +103,13 @@ public class NVMgmtWebServer implements Container {
     private void start() throws IOException {
         SSLContext sslContext = null;
         Map<String, Service> routes = new HashMap<String, Service>();
-        routes.put("/metadatasocket", new MetaDataUpdate());
-        routes.put("/ddbsocket", new DDBUpdate());
+        //routes.put("/metadatasocket", new MetaDataUpdate());
+        //routes.put("/ddbsocket", new DDBUpdate());
         if (matcher != null) {
             matcher.start();
             routes.put(matcher.getWSPath(), matcher);
         }
-        routes.put("/uploadsocket", new MetaDataUpload());
+        //routes.put("/uploadsocket", new MetaDataUpload());
         routes.put("/ping", new PingService());
         Router negotiator = new PathRouter(routes, new PingService());
 //        if (!Main.blockDev)
