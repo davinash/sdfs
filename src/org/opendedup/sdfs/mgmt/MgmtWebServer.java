@@ -769,6 +769,18 @@ public class MgmtWebServer implements Container {
                                 SDFSLogger.getLog().warn("list-volumes", e);
                             }
                             break;
+                        case "version":
+                            try {
+                                Element msg = new Version().getResult(cmdOptions, file);
+                                result.setAttribute("status", "success");
+                                result.setAttribute("msg", "command completed successfully");
+                                result.appendChild(doc.adoptNode(msg));
+                            } catch (IOException e) {
+                                result.setAttribute("status", "failed");
+                                result.setAttribute("msg", e.toString());
+                                SDFSLogger.getLog().warn("version", e);
+                            }
+                            break;
                         case "changepassword":
                             try {
                                 String msg = new SetPasswordCmd().getResult("", qry.get("newpassword"));
