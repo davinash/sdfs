@@ -4,6 +4,7 @@ public class VolumnInfo {
     private String version;
     private int port;
     private String listenAddrss;
+    private String sdfsPassword;
 
 
     public VolumnInfo() {
@@ -23,6 +24,7 @@ public class VolumnInfo {
                 "version='" + version + '\'' +
                 ", port=" + port +
                 ", listenAddrss='" + listenAddrss + '\'' +
+                ", sdfsPassword='" + sdfsPassword + '\'' +
                 '}';
     }
 
@@ -40,5 +42,13 @@ public class VolumnInfo {
 
     public void setListenAddrss(String listenAddrss) {
         this.listenAddrss = listenAddrss;
+    }
+
+    public String getSdfsPassword() {
+        return sdfsPassword;
+    }
+
+    public void setSdfsPassword(String sdfsPassword) {
+        this.sdfsPassword = sdfsPassword;
     }
 }

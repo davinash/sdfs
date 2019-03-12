@@ -131,7 +131,10 @@ public class NVMgmtWebServer implements Container {
                         MgmtServerConnection.server = volumnInfo.getListenAddrss();
                         MgmtServerConnection.port = volumnInfo.getPort();
                         MgmtServerConnection.useSSL = false;
-                        MgmtServerConnection.baseHmac = MgmtServerConnection.initAuth("admin",MgmtServerConnection.server,MgmtServerConnection.port,false);
+                        MgmtServerConnection.baseHmac =
+                                MgmtServerConnection.initAuth(volumnInfo.getSdfsPassword(),
+                                        MgmtServerConnection.server,
+                                        MgmtServerConnection.port,false);
                         Document document = MgmtServerConnection.getResponse("/?cmd=version");
                         System.out.println("document = " + document);
 
@@ -257,6 +260,7 @@ public class NVMgmtWebServer implements Container {
         Element cli = (Element) doc.getElementsByTagName("sdfscli").item(0);
         volumnInfo.setPort(Integer.parseInt(cli.getAttribute("port")));
         volumnInfo.setListenAddrss(cli.getAttribute("listen-address"));
+        volumnInfo.setSdfsPassword(cli.getAttribute("password"));
         return volumnInfo;
     }
 }
