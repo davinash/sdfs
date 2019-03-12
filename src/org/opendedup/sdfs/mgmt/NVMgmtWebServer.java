@@ -130,11 +130,11 @@ public class NVMgmtWebServer implements Container {
                     case "version":
                         MgmtServerConnection.server = volumnInfo.getListenAddrss();
                         MgmtServerConnection.port = volumnInfo.getPort();
-                        MgmtServerConnection.useSSL = false;
+                        MgmtServerConnection.useSSL = true;
                         MgmtServerConnection.baseHmac =
                                 MgmtServerConnection.initAuth("admin",
                                         MgmtServerConnection.server,
-                                        MgmtServerConnection.port,true);
+                                        MgmtServerConnection.port,MgmtServerConnection.useSSL);
                         Document document = MgmtServerConnection.getResponse("/?cmd=version");
                         System.out.println("document = " + document);
 
