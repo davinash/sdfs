@@ -81,6 +81,7 @@ public class MgmtServerConnection {
 					salt.getBytes());
 			return HashFunctions.getHmacSHA256(sessionId,StringUtils.getHexBytes(key));
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new IOException(e);
 		} finally {
 			if (in != null) {
