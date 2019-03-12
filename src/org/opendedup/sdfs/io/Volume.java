@@ -682,6 +682,7 @@ public class Volume implements java.io.Serializable {
 				Integer.toString(Main.writeTimeoutSeconds));
 		root.setAttribute("sync-files", Boolean.toString(Main.syncDL));
 		root.setAttribute("compress-metadata", Boolean.toString(Main.COMPRESS_METADATA));
+		root.setAttribute("block-size", Integer.toString(this.getBlockSize()));
 		if(this.car != null && this.car.length > 0) {
 			for(InetSocketAddress ar : car) {
 				Element addr = doc.createElement("cassandra-node");
