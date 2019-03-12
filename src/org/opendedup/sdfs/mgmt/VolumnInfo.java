@@ -23,4 +23,12 @@ public class VolumnInfo {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "VolumnInfo{" +
+                "version='" + version + '\'' +
+                ", sdfsVolume=" + sdfsVolume +
+                '}';
+    }
 }

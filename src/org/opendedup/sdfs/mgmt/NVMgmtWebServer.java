@@ -160,6 +160,7 @@ public class NVMgmtWebServer implements Container {
     }
 
     private VolumnInfo parseVolumeConfigFile(File file) throws ParserConfigurationException, IOException, SAXException {
+        System.out.println("file = [" + file + "]");
         VolumnInfo volumnInfo = new VolumnInfo();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
