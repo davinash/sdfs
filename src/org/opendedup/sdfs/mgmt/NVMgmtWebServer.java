@@ -12,6 +12,7 @@ import org.opendedup.logging.SDFSLogger;
 import org.opendedup.sdfs.Main;
 import org.opendedup.sdfs.io.AbstractStreamMatcher;
 import org.opendedup.sdfs.io.Volume;
+import org.opendedup.sdfs.mgmt.cli.MgmtServerConnection;
 import org.opendedup.sdfs.mgmt.websocket.PingService;
 import org.opendedup.util.FindOpenPort;
 import org.simpleframework.common.buffer.FileAllocator;
@@ -127,30 +128,37 @@ public class NVMgmtWebServer implements Container {
 
                 switch (cmd) {
                     case "version":
-                        try {
-                            CloseableHttpClient httpclient = HttpClients.createDefault();
-                            final String targetVolumeServer = "https://" + volumnInfo.getListenAddrss() + ":"
-                                    + volumnInfo.getPort() + "/?cmd=version";
-                            System.out.println("targetVolumeServer URL = " + targetVolumeServer);
-                            HttpGet httpGet = new HttpGet(targetVolumeServer);
-                            CloseableHttpResponse response1 = httpclient.execute(httpGet);
-                            try {
-                                System.out.println(response1.getStatusLine());
-                                HttpEntity entity1 = response1.getEntity();
-                                String responseXml = EntityUtils.toString(response1.getEntity());
-                                System.out.println("responseXml = " + responseXml);
-                                // do something useful with the response body
-                                // and ensure it is fully consumed
-                                EntityUtils.consume(entity1);
-                            } finally {
-                                response1.close();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            result.setAttribute("status", "failed");
-                            result.setAttribute("msg", e.toString());
-                            SDFSLogger.getLog().warn("version", e);
-                        }
+                        MgmtServerConnection.server = volumnInfo.getListenAddrss();
+                        MgmtServerConnection.port = volumnInfo.getPort();
+                        MgmtServerConnection.useSSL = false;
+                        MgmtServerConnection.baseHmac = MgmtServerConnection.initAuth("admin",MgmtServerConnection.server,MgmtServerConnection.port,false);
+                        Document document = MgmtServerConnection.getResponse("/?cmd=version");
+                        System.out.println("document = " + document);
+
+//                        try {
+//                            CloseableHttpClient httpclient = HttpClients.createDefault();
+//                            final String targetVolumeServer = "https://" + volumnInfo.getListenAddrss() + ":"
+//                                    + volumnInfo.getPort() + "/?cmd=version";
+//                            System.out.println("targetVolumeServer URL = " + targetVolumeServer);
+//                            HttpGet httpGet = new HttpGet(targetVolumeServer);
+//                            CloseableHttpResponse response1 = httpclient.execute(httpGet);
+//                            try {
+//                                System.out.println(response1.getStatusLine());
+//                                HttpEntity entity1 = response1.getEntity();
+//                                String responseXml = EntityUtils.toString(response1.getEntity());
+//                                System.out.println("responseXml = " + responseXml);
+//                                // do something useful with the response body
+//                                // and ensure it is fully consumed
+//                                EntityUtils.consume(entity1);
+//                            } finally {
+//                                response1.close();
+//                            }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            result.setAttribute("status", "failed");
+//                            result.setAttribute("msg", e.toString());
+//                            SDFSLogger.getLog().warn("version", e);
+//                        }
                         break;
                     default:
                         result.setAttribute("status", "failed");
