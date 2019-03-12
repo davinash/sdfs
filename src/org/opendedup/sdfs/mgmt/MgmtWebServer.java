@@ -759,7 +759,7 @@ public class MgmtWebServer implements Container {
                             break;
                         case "list-volumes":
                             try {
-                                Element msg = new GetVolume().getResult(cmdOptions, file);
+                                Element msg = new GetVolumeList().getResult(cmdOptions, file);
                                 result.setAttribute("status", "success");
                                 result.setAttribute("msg", "command completed successfully");
                                 result.appendChild(doc.adoptNode(msg));
