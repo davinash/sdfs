@@ -35,10 +35,10 @@ public class CreateVolumeWeb {
         }
     }
 
-    private Document toXMLDocument(String messssage) throws ParserConfigurationException {
+    private Document toXMLDocument(String message) throws ParserConfigurationException {
         Document doc = XMLUtils.getXMLDoc("create-volume");
         Element root = doc.getDocumentElement();
-        root.setAttribute("Status", messssage);
+        root.setAttribute("Status", message);
         return doc;
     }
 }
