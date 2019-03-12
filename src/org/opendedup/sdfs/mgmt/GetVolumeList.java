@@ -34,9 +34,12 @@ public class GetVolumeList {
     }
 
     private Document toXMLDocument(File[] files) throws ParserConfigurationException {
+        final String SUFFIX_TO_REMOVE = "-volume-cfg.xml";
         List<String> volumeNames = new ArrayList<>();
         for (File file : files) {
-            volumeNames.add(file.getName());
+            String fileName = file.getName();
+            String volName =  fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
+            volumeNames.add(volName);
         }
         Document doc = XMLUtils.getXMLDoc("volumes");
         Element root = doc.getDocumentElement();
