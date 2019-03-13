@@ -13,7 +13,7 @@ public class Version {
     public Element getResult(String cmd, String file) throws IOException {
         System.out.println("Main.version = " + Main.version);
         try {
-            return (Element) this.toXMLDocument(new String(Main.version)).getDocumentElement()
+            return (Element) this.toXMLDocument(Main.version).getDocumentElement()
                     .cloneNode(true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -25,7 +25,7 @@ public class Version {
     }
     private Document toXMLDocument(final String version) throws ParserConfigurationException {
         System.out.println("Version::toXMLDocument::version = [" + version + "]");
-        Document doc = XMLUtils.getXMLDoc("version");
+        Document doc = XMLUtils.getXMLDoc("version-info");
         Element root = doc.getDocumentElement();
         root.setAttribute("version", version);
         System.out.println("root = " + root);

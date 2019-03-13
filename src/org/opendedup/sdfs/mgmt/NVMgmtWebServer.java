@@ -143,38 +143,15 @@ public class NVMgmtWebServer implements Container {
                         formatter.format("cmd=version");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
                         Element root = document.getDocumentElement();
+                        //Element msg = root.getAttribute("msg");
                         System.out.println(root.getAttribute("msg"));
                         if (root.getAttribute("status").equalsIgnoreCase("success")) {
-                            System.out.println(root.getElementsByTagName("version").item(0));
+                            System.out.println(root.getElementsByTagName("version-info").item(0));
                         }
+                        //result.appendChild(doc.adoptNode(msg));
                         System.out.println("document = " + document);
                     }
-
-//                        try {
-//                            CloseableHttpClient httpclient = HttpClients.createDefault();
-//                            final String targetVolumeServer = "https://" + volumnInfo.getListenAddrss() + ":"
-//                                    + volumnInfo.getPort() + "/?cmd=version";
-//                            System.out.println("targetVolumeServer URL = " + targetVolumeServer);
-//                            HttpGet httpGet = new HttpGet(targetVolumeServer);
-//                            CloseableHttpResponse response1 = httpclient.execute(httpGet);
-//                            try {
-//                                System.out.println(response1.getStatusLine());
-//                                HttpEntity entity1 = response1.getEntity();
-//                                String responseXml = EntityUtils.toString(response1.getEntity());
-//                                System.out.println("responseXml = " + responseXml);
-//                                // do something useful with the response body
-//                                // and ensure it is fully consumed
-//                                EntityUtils.consume(entity1);
-//                            } finally {
-//                                response1.close();
-//                            }
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                            result.setAttribute("status", "failed");
-//                            result.setAttribute("msg", e.toString());
-//                            SDFSLogger.getLog().warn("version", e);
-//                        }
-                        break;
+                    break;
 
                     case "volume-info": {
                         MgmtServerConnection.server = volumnInfo.getListenAddrss();
