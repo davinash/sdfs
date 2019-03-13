@@ -1,21 +1,12 @@
 package org.opendedup.sdfs.mgmt;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.opendedup.logging.SDFSLogger;
 import org.opendedup.sdfs.Main;
 import org.opendedup.sdfs.io.AbstractStreamMatcher;
-import org.opendedup.sdfs.io.Volume;
 import org.opendedup.sdfs.mgmt.cli.MgmtServerConnection;
 import org.opendedup.sdfs.mgmt.websocket.PingService;
 import org.opendedup.util.FindOpenPort;
-import org.opendedup.util.XMLUtils;
 import org.simpleframework.common.buffer.FileAllocator;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -29,7 +20,6 @@ import org.simpleframework.http.socket.service.Service;
 import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -45,7 +35,6 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -118,16 +107,18 @@ public class NVMgmtWebServer implements Container {
 
             System.out.println("cmd=" + cmd + " options=" + cmdOptions + " vol-name=" + volumeName);
             if (cmdReq) {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder;
-                builder = factory.newDocumentBuilder();
-                DOMImplementation impl = builder.getDOMImplementation();
-                // Document.
-                Document doc = impl.createDocument(null, "result", null);
-                // Root element.
-                Element result = doc.getDocumentElement();
-                result.setAttribute("status", "failed");
-                result.setAttribute("msg", "could not authenticate user");
+//                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//                DocumentBuilder builder;
+//                builder = factory.newDocumentBuilder();
+//                DOMImplementation impl = builder.getDOMImplementation();
+//                // Document.
+//                Document doc = impl.createDocument(null, "result", null);
+//                // Root element.
+//                Element result = doc.getDocumentElement();
+//                result.setAttribute("status", "failed");
+//                result.setAttribute("msg", "could not authenticate user");
+
+                JSONObject responseJson = new JSONObject();
 
                 switch (cmd) {
                     case "version": {
@@ -143,18 +134,26 @@ public class NVMgmtWebServer implements Container {
                         Formatter formatter = new Formatter(sb);
                         formatter.format("cmd=version");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
-                        Element rootInternal = document.getDocumentElement();
-                        //Element msg = root.getAttribute("msg");
-                        System.out.println(rootInternal.getAttribute("msg"));
-                        System.out.println("-----> " + rootInternal.getAttribute("version-info"));
-                        if (rootInternal.getAttribute("status").equalsIgnoreCase("success")) {
-                            Element versionInfoElem = (Element) rootInternal.getElementsByTagName("version-info").item(0);
-                            System.out.println("=====> " + versionInfoElem.getAttribute("version"));
+                        Element documentElement = document.getDocumentElement();
+
+                        responseJson.put("status", documentElement.getAttribute("status"));
+                        responseJson.put("msg", documentElement.getAttribute("msg"));
+                        if (documentElement.getAttribute("status").equalsIgnoreCase("success")) {
+                            Element versionInfoElem = (Element) documentElement.getElementsByTagName("version-info").item(0);
+                            //System.out.println("=====> " + versionInfoElem.getAttribute("version"));
+                            responseJson.put("version", versionInfoElem.getAttribute("version"));
                         }
-                        result.setAttribute("status", rootInternal.getAttribute("status"));
-                        result.setAttribute("msg", rootInternal.getAttribute("msg"));
-                        result.appendChild(doc.adoptNode(rootInternal));
-                        System.out.println("document = " + document);
+                        //Element msg = root.getAttribute("msg");
+//                        System.out.println(rootInternal.getAttribute("msg"));
+//                        System.out.println("-----> " + rootInternal.getAttribute("version-info"));
+//                        if (rootInternal.getAttribute("status").equalsIgnoreCase("success")) {
+//                            Element versionInfoElem = (Element) rootInternal.getElementsByTagName("version-info").item(0);
+//                            System.out.println("=====> " + versionInfoElem.getAttribute("version"));
+//                        }
+//                        result.setAttribute("status", rootInternal.getAttribute("status"));
+//                        result.setAttribute("msg", rootInternal.getAttribute("msg"));
+//                        result.appendChild(doc.adoptNode(rootInternal));
+//                        System.out.println("document = " + document);
                     }
                     break;
 
@@ -175,15 +174,15 @@ public class NVMgmtWebServer implements Container {
                         break;
                     }
                     default:
-                        result.setAttribute("status", "failed");
-                        result.setAttribute("msg", "no command specified");
+//                        result.setAttribute("status", "failed");
+//                        result.setAttribute("msg", "no command specified");
+                        responseJson.put("status", "failed");
+                        responseJson.put("msg", "no command specified");
                 }
 
-                String rsString = XMLUtils.toXMLString(doc);
-
-                // SDFSLogger.getLog().debug(rsString);
-                response.setContentType("text/xml");
-                byte[] rb = rsString.getBytes();
+                response.setContentType("application/json");
+                String responseJsonString = responseJson.toString();
+                byte[] rb = responseJsonString.getBytes();
                 response.setContentLength(rb.length);
                 response.getOutputStream().write(rb);
                 response.getOutputStream().flush();
