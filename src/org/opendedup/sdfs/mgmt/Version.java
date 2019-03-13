@@ -27,6 +27,8 @@ public class Version {
         Document doc = XMLUtils.getXMLDoc("version");
         Element root = doc.getDocumentElement();
         root.setAttribute("version", version);
+        System.out.println("root = " + root);
+        System.out.println("doc = " + doc);
         return doc;
     }
 }
