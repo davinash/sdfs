@@ -114,10 +114,10 @@ public class NVMgmtWebServer implements Container {
                     case "create-volume": {
                         if (cmdOptions != null) {
                             try {
-//                                File f = new File(OSValidator.getConfigPath());
-//                                if (!f.exists())
-//                                    f.mkdirs();
-//                                VolumeConfigWriter wr = new VolumeConfigWriter();
+                                File f = new File(OSValidator.getConfigPath());
+                                if (!f.exists())
+                                    f.mkdirs();
+                                VolumeConfigWriter wr = new VolumeConfigWriter();
                                 System.out.println("=====> CMD Options " + cmdOptions);
 
                                 List<String> items= Stream.of(cmdOptions.split(","))
@@ -128,8 +128,10 @@ public class NVMgmtWebServer implements Container {
 
                                 String[] args = arguments.toArray(new String[arguments.size()]);
                                 System.out.println("Final Arguments = " + args);
-//                                wr.parseCmdLine(args);
-//                                wr.writeConfigFile();
+                                wr.parseCmdLine(args);
+                                wr.writeConfigFile();
+                                responseJson.put("status", "success");
+                                responseJson.put("msg", "command completed successfully");
                             } catch (Exception e) {
                                 responseJson.put("status", "failed");
                                 responseJson.put("msg", "Exception occurred");
