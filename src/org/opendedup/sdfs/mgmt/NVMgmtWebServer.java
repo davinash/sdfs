@@ -184,7 +184,7 @@ public class NVMgmtWebServer implements Container {
                         Formatter formatter = new Formatter(sb);
                         formatter.format("cmd=volume-info");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
-                        System.out.println("document = " + document);
+                        System.out.println("document = " + document.getDocumentElement());
                         break;
                     }
                     default:
