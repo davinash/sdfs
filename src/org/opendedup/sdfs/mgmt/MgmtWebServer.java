@@ -775,11 +775,13 @@ public class MgmtWebServer implements Container {
                             break;
                         case "version":
                             try {
+                                System.out.println("-----> Processing version command");
                                 Element msg = new Version().getResult(cmdOptions, file);
                                 result.setAttribute("status", "success");
                                 result.setAttribute("msg", "command completed successfully");
                                 result.appendChild(doc.adoptNode(msg));
                             } catch (IOException e) {
+                                e.printStackTrace();
                                 result.setAttribute("status", "failed");
                                 result.setAttribute("msg", e.toString());
                                 SDFSLogger.getLog().warn("version", e);
