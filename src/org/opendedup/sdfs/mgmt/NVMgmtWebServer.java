@@ -1,5 +1,6 @@
 package org.opendedup.sdfs.mgmt;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opendedup.logging.SDFSLogger;
 import org.opendedup.sdfs.Main;
@@ -35,10 +36,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URLDecoder;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class NVMgmtWebServer implements Container {
     private static Connection connection = null;
@@ -107,20 +105,34 @@ public class NVMgmtWebServer implements Container {
 
             System.out.println("cmd=" + cmd + " options=" + cmdOptions + " vol-name=" + volumeName);
             if (cmdReq) {
-//                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//                DocumentBuilder builder;
-//                builder = factory.newDocumentBuilder();
-//                DOMImplementation impl = builder.getDOMImplementation();
-//                // Document.
-//                Document doc = impl.createDocument(null, "result", null);
-//                // Root element.
-//                Element result = doc.getDocumentElement();
-//                result.setAttribute("status", "failed");
-//                result.setAttribute("msg", "could not authenticate user");
-
                 JSONObject responseJson = new JSONObject();
-
                 switch (cmd) {
+                    case "list-volumes": {
+                        try {
+                            File dir = new File("/etc/sdfs");
+                            File [] files = dir.listFiles(new FilenameFilter() {
+                                @Override
+                                public boolean accept(File dir, String name) {
+                                    return name.endsWith("-volume-cfg.xml");
+                                }
+                            });
+                            final String SUFFIX_TO_REMOVE = "-volume-cfg.xml";
+                            JSONArray volumeNamesJsonArray = new JSONArray();
+                            for (File file : files) {
+                                String fileName = file.getName();
+                                String volName =  fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
+                                volumeNamesJsonArray.put(volName);
+                            }
+                            responseJson.put("volume-list", volumeNamesJsonArray);
+                            responseJson.put("status", "success");
+                            responseJson.put("msg", "command completed successfully");
+
+                        } catch (Exception e) {
+                            responseJson.put("status", "failed");
+                            responseJson.put("msg", "Exception occurred");
+                        }
+                        break;
+                    }
                     case "version": {
                         MgmtServerConnection.server = volumnInfo.getListenAddrss();
                         MgmtServerConnection.port = volumnInfo.getPort();
@@ -140,20 +152,8 @@ public class NVMgmtWebServer implements Container {
                         responseJson.put("msg", documentElement.getAttribute("msg"));
                         if (documentElement.getAttribute("status").equalsIgnoreCase("success")) {
                             Element versionInfoElem = (Element) documentElement.getElementsByTagName("version-info").item(0);
-                            //System.out.println("=====> " + versionInfoElem.getAttribute("version"));
                             responseJson.put("version", versionInfoElem.getAttribute("version"));
                         }
-                        //Element msg = root.getAttribute("msg");
-//                        System.out.println(rootInternal.getAttribute("msg"));
-//                        System.out.println("-----> " + rootInternal.getAttribute("version-info"));
-//                        if (rootInternal.getAttribute("status").equalsIgnoreCase("success")) {
-//                            Element versionInfoElem = (Element) rootInternal.getElementsByTagName("version-info").item(0);
-//                            System.out.println("=====> " + versionInfoElem.getAttribute("version"));
-//                        }
-//                        result.setAttribute("status", rootInternal.getAttribute("status"));
-//                        result.setAttribute("msg", rootInternal.getAttribute("msg"));
-//                        result.appendChild(doc.adoptNode(rootInternal));
-//                        System.out.println("document = " + document);
                     }
                     break;
 
@@ -174,8 +174,6 @@ public class NVMgmtWebServer implements Container {
                         break;
                     }
                     default:
-//                        result.setAttribute("status", "failed");
-//                        result.setAttribute("msg", "no command specified");
                         responseJson.put("status", "failed");
                         responseJson.put("msg", "no command specified");
                 }
