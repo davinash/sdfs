@@ -39,6 +39,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NVMgmtWebServer implements Container {
     private static Connection connection = null;
@@ -116,8 +118,16 @@ public class NVMgmtWebServer implements Container {
 //                                if (!f.exists())
 //                                    f.mkdirs();
 //                                VolumeConfigWriter wr = new VolumeConfigWriter();
-                                String[] args = new String[10];
                                 System.out.println("=====> CMD Options " + cmdOptions);
+
+                                List<String> items= Stream.of(cmdOptions.split(","))
+                                        .map(String::trim)
+                                        .collect(Collectors.toList());
+                                List<String> arguments = items.stream().map(c -> "--" + c).collect(Collectors.toList());
+                                System.out.println("=====> arguments = " + arguments);
+
+                                String[] args = arguments.toArray(new String[arguments.size()]);
+                                System.out.println("Final Arguments = " + args);
 //                                wr.parseCmdLine(args);
 //                                wr.writeConfigFile();
                             } catch (Exception e) {
