@@ -16,6 +16,7 @@ public class Version {
             return (Element) this.toXMLDocument(Main.version).getDocumentElement()
                     .cloneNode(true);
         } catch (Exception e) {
+            e.printStackTrace();
             SDFSLogger.getLog().error(
                     "unable to fulfill request on file " + file, e);
             throw new IOException("request to fetch attributes failed because "

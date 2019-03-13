@@ -13,6 +13,7 @@ public class GetVolume {
 			return (Element) Main.volume.toXMLDocument().getDocumentElement()
 					.cloneNode(true);
 		} catch (Exception e) {
+
 			SDFSLogger.getLog().error(
 					"unable to fulfill request on file " + file, e);
 			throw new IOException("request to fetch attributes failed because "
