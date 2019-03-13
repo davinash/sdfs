@@ -110,7 +110,7 @@ public class NVMgmtWebServer implements Container {
                     case "list-volumes": {
                         try {
                             File dir = new File("/etc/sdfs");
-                            File [] files = dir.listFiles(new FilenameFilter() {
+                            File[] files = dir.listFiles(new FilenameFilter() {
                                 @Override
                                 public boolean accept(File dir, String name) {
                                     return name.endsWith("-volume-cfg.xml");
@@ -120,7 +120,7 @@ public class NVMgmtWebServer implements Container {
                             JSONArray volumeNamesJsonArray = new JSONArray();
                             for (File file : files) {
                                 String fileName = file.getName();
-                                String volName =  fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
+                                String volName = fileName.substring(0, fileName.length() - SUFFIX_TO_REMOVE.length());
                                 volumeNamesJsonArray.put(volName);
                             }
                             responseJson.put("volume-list", volumeNamesJsonArray);
@@ -170,7 +170,22 @@ public class NVMgmtWebServer implements Container {
                         Formatter formatter = new Formatter(sb);
                         formatter.format("cmd=volume-info");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
-                        System.out.println("document = " + document.getDocumentElement());
+
+                        Element documentElement = document.getDocumentElement();
+                        responseJson.put("status", documentElement.getAttribute("status"));
+                        responseJson.put("msg", documentElement.getAttribute("msg"));
+                        if (documentElement.getAttribute("status").equalsIgnoreCase("success")) {
+                            Element volumeElem = (Element) documentElement.getElementsByTagName("volume").item(0);
+                            responseJson.put("path", volumeElem.getAttribute("path"));
+                            responseJson.put("name", volumeElem.getAttribute("name"));
+                            responseJson.put("current-size", volumeElem.getAttribute("current-size"));
+                            responseJson.put("capacity", volumeElem.getAttribute("capacity"));
+                            responseJson.put("maximum-percentage-full", volumeElem.getAttribute("maximum-percentage-full"));
+                            responseJson.put("duplicate-bytes", volumeElem.getAttribute("duplicate-bytes"));
+                            responseJson.put("read-bytes", volumeElem.getAttribute("read-bytes"));
+                            responseJson.put("serial-number", volumeElem.getAttribute("serial-number"));
+                            responseJson.put("block-size", volumeElem.getAttribute("block-size"));
+                        }
                         break;
                     }
                     default:
