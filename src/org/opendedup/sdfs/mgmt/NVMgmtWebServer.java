@@ -178,6 +178,7 @@ public class NVMgmtWebServer implements Container {
                         result.setAttribute("status", "failed");
                         result.setAttribute("msg", "no command specified");
                 }
+
                 String rsString = XMLUtils.toXMLString(doc);
 
                 // SDFSLogger.getLog().debug(rsString);
