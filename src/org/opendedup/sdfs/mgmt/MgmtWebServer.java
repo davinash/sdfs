@@ -201,6 +201,7 @@ public class MgmtWebServer implements Container {
                 auth = true;
             }
             if (cmdReq) {
+                System.out.println("-----> Inside cmd Loop");
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder;
                 builder = factory.newDocumentBuilder();
@@ -212,6 +213,7 @@ public class MgmtWebServer implements Container {
                 result.setAttribute("status", "failed");
                 result.setAttribute("msg", "could not authenticate user");
                 if (auth) {
+                    System.out.println("-----> Command is cmd");
                     switch (cmd) {
                         case "shutdown":
                             new Shutdown().getResult();

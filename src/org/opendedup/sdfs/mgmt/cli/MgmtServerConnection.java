@@ -179,6 +179,7 @@ public class MgmtServerConnection {
 
 			return doc;
 		} catch (Exception e) {
+		    e.printStackTrace();
 			throw new IOException(e);
 		} finally {
 			if (in != null) {
