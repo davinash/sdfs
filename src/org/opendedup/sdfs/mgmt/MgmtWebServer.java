@@ -110,7 +110,6 @@ public class MgmtWebServer implements Container {
     public void handle(Request request, Response response) {
         try {
             //SDFSLogger.getLog().info(request.getTarget());
-            System.out.println("MgmtWebServer:: request = " + request);
             Path reqPath = request.getPath();
             String[] parts = request.getTarget().split("\\?");
             Map<String, String> qry = null;
@@ -133,7 +132,6 @@ public class MgmtWebServer implements Container {
             if (qry.containsKey("options"))
                 cmdOptions = qry.get("options");
             SDFSLogger.getLog().debug("cmd=" + cmd + " file=" + file + " options=" + cmdOptions);
-            System.out.println("cmd=" + cmd + " file=" + file + " options=" + cmdOptions);
 
             boolean auth = false;
             if (request.getTarget().startsWith(SESSION)) {
@@ -201,7 +199,6 @@ public class MgmtWebServer implements Container {
                 auth = true;
             }
             if (cmdReq) {
-                System.out.println("-----> Inside cmd Loop");
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder;
                 builder = factory.newDocumentBuilder();
@@ -213,7 +210,6 @@ public class MgmtWebServer implements Container {
                 result.setAttribute("status", "failed");
                 result.setAttribute("msg", "could not authenticate user");
                 if (auth) {
-                    System.out.println("-----> Command is " + cmd);
                     switch (cmd) {
                         case "shutdown":
                             new Shutdown().getResult();
@@ -775,13 +771,10 @@ public class MgmtWebServer implements Container {
                             break;
                         case "version":
                             try {
-                                System.out.println("-----> Processing version command");
                                 Element msg = new Version().getResult(cmdOptions, file);
                                 result.setAttribute("status", "success");
                                 result.setAttribute("msg", "command completed successfully");
                                 result.appendChild(doc.adoptNode(msg));
-                                System.out.println("msg = " + msg);
-                                System.out.println("result = " + result);
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 result.setAttribute("status", "failed");

@@ -64,10 +64,8 @@ public class MgmtServerConnection {
 				prot = "https";
 			}
 			String req = prot + "://" + svr + ":" + pt + "/session/";
-			System.out.println("Getting session for " + req);
 			method = new GetMethod(req);
 			int returnCode = client.executeMethod(method);
-			System.out.println("returnCode = " + returnCode);
 			if (returnCode != 200)
 				throw new IOException("Unable to process command "
 						+ method.getQueryString() + " return code was"
@@ -161,7 +159,6 @@ public class MgmtServerConnection {
 			}
 			String req = prot + "://" + server + ":" + port + "/?" + url;
 			SDFSLogger.getLog().debug(req);
-			System.out.println("req = " + req);
 			method = new GetMethod(req);
 			int returnCode = client.executeMethod(method);
 			if(returnCode == 403) {

@@ -4,10 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opendedup.logging.SDFSLogger;
 import org.opendedup.sdfs.Main;
+import org.opendedup.sdfs.VolumeConfigWriter;
 import org.opendedup.sdfs.io.AbstractStreamMatcher;
 import org.opendedup.sdfs.mgmt.cli.MgmtServerConnection;
 import org.opendedup.sdfs.mgmt.websocket.PingService;
 import org.opendedup.util.FindOpenPort;
+import org.opendedup.util.OSValidator;
 import org.simpleframework.common.buffer.FileAllocator;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -107,6 +109,27 @@ public class NVMgmtWebServer implements Container {
             if (cmdReq) {
                 JSONObject responseJson = new JSONObject();
                 switch (cmd) {
+                    case "create-volume": {
+                        if (cmdOptions != null) {
+                            try {
+//                                File f = new File(OSValidator.getConfigPath());
+//                                if (!f.exists())
+//                                    f.mkdirs();
+//                                VolumeConfigWriter wr = new VolumeConfigWriter();
+                                String[] args = new String[10];
+                                System.out.println("=====> CMD Options " + cmdOptions);
+//                                wr.parseCmdLine(args);
+//                                wr.writeConfigFile();
+                            } catch (Exception e) {
+                                responseJson.put("status", "failed");
+                                responseJson.put("msg", "Exception occurred");
+                            }
+                        } else {
+                            responseJson.put("status", "failed");
+                            responseJson.put("msg", "Required options are not specified");
+                        }
+                        break;
+                    }
                     case "list-volumes": {
                         try {
                             File dir = new File("/etc/sdfs");
