@@ -145,6 +145,7 @@ public class NVMgmtWebServer implements Container {
                         Element root = document.getDocumentElement();
                         //Element msg = root.getAttribute("msg");
                         System.out.println(root.getAttribute("msg"));
+                        System.out.println("-----> " + root.getAttribute("version-info"));
                         if (root.getAttribute("status").equalsIgnoreCase("success")) {
                             System.out.println(root.getElementsByTagName("version-info").item(0));
                         }
