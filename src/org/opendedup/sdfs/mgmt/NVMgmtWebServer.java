@@ -129,20 +129,21 @@ public class NVMgmtWebServer implements Container {
                 result.setAttribute("msg", "could not authenticate user");
 
                 switch (cmd) {
-                    case "version":
+                    case "version": {
                         MgmtServerConnection.server = volumnInfo.getListenAddrss();
                         MgmtServerConnection.port = volumnInfo.getPort();
                         MgmtServerConnection.useSSL = true;
                         MgmtServerConnection.baseHmac =
                                 MgmtServerConnection.initAuth("admin",
                                         MgmtServerConnection.server,
-                                        MgmtServerConnection.port,MgmtServerConnection.useSSL);
+                                        MgmtServerConnection.port, MgmtServerConnection.useSSL);
 
                         StringBuilder sb = new StringBuilder();
                         Formatter formatter = new Formatter(sb);
                         formatter.format("cmd=version");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
                         System.out.println("document = " + document);
+                    }
 
 //                        try {
 //                            CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -169,6 +170,23 @@ public class NVMgmtWebServer implements Container {
 //                            SDFSLogger.getLog().warn("version", e);
 //                        }
                         break;
+
+                    case "volume-info": {
+                        MgmtServerConnection.server = volumnInfo.getListenAddrss();
+                        MgmtServerConnection.port = volumnInfo.getPort();
+                        MgmtServerConnection.useSSL = true;
+                        MgmtServerConnection.baseHmac =
+                                MgmtServerConnection.initAuth("admin",
+                                        MgmtServerConnection.server,
+                                        MgmtServerConnection.port, MgmtServerConnection.useSSL);
+
+                        StringBuilder sb = new StringBuilder();
+                        Formatter formatter = new Formatter(sb);
+                        formatter.format("cmd=volume-info");
+                        Document document = MgmtServerConnection.getResponse(sb.toString());
+                        System.out.println("document = " + document);
+                        break;
+                    }
                     default:
                         result.setAttribute("status", "failed");
                         result.setAttribute("msg", "no command specified");
