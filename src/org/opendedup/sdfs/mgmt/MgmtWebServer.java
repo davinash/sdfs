@@ -213,7 +213,7 @@ public class MgmtWebServer implements Container {
                 result.setAttribute("status", "failed");
                 result.setAttribute("msg", "could not authenticate user");
                 if (auth) {
-                    System.out.println("-----> Command is cmd");
+                    System.out.println("-----> Command is " + cmd);
                     switch (cmd) {
                         case "shutdown":
                             new Shutdown().getResult();
@@ -780,6 +780,8 @@ public class MgmtWebServer implements Container {
                                 result.setAttribute("status", "success");
                                 result.setAttribute("msg", "command completed successfully");
                                 result.appendChild(doc.adoptNode(msg));
+                                System.out.println("msg = " + msg);
+                                System.out.println("result = " + result);
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 result.setAttribute("status", "failed");
