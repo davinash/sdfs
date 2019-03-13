@@ -24,6 +24,7 @@ public class Version {
         }
     }
     private Document toXMLDocument(final String version) throws ParserConfigurationException {
+        System.out.println("Version::toXMLDocument::version = [" + version + "]");
         Document doc = XMLUtils.getXMLDoc("version");
         Element root = doc.getDocumentElement();
         root.setAttribute("version", version);
