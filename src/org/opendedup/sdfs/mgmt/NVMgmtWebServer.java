@@ -142,6 +142,11 @@ public class NVMgmtWebServer implements Container {
                         Formatter formatter = new Formatter(sb);
                         formatter.format("cmd=version");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
+                        Element root = document.getDocumentElement();
+                        System.out.println(root.getAttribute("msg"));
+                        if (root.getAttribute("status").equalsIgnoreCase("success")) {
+                            System.out.println(root.getElementsByTagName("version").item(0));
+                        }
                         System.out.println("document = " + document);
                     }
 
