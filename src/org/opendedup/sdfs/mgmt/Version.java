@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public class Version {
     public Element getResult(String cmd, String file) throws IOException {
+        System.out.println("Main.version = " + Main.version);
         try {
             return (Element) this.toXMLDocument(Main.version).getDocumentElement()
                     .cloneNode(true);
@@ -21,7 +22,7 @@ public class Version {
                     + e.toString());
         }
     }
-    private Document toXMLDocument(String version) throws ParserConfigurationException {
+    private Document toXMLDocument(final String version) throws ParserConfigurationException {
         Document doc = XMLUtils.getXMLDoc("version");
         Element root = doc.getDocumentElement();
         root.setAttribute("version", version);

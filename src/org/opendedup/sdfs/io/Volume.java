@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
@@ -857,5 +858,50 @@ public class Volume implements java.io.Serializable {
 
 	public void setSerialNumber(int serialNumber) {
 		this.serialNumber = serialNumber;
+	}
+
+	@Override
+	public String toString() {
+		return "Volume{" +
+				"capacity=" + capacity +
+				", name='" + name + '\'' +
+				", currentSize=" + currentSize +
+				", path='" + path + '\'' +
+				", pathF=" + pathF +
+				", blockSize=" + blockSize +
+				", fullPercentage=" + fullPercentage +
+				", absoluteLength=" + absoluteLength +
+				", duplicateBytes=" + duplicateBytes +
+				", files=" + files +
+				", virtualBytesWritten=" + virtualBytesWritten +
+				", readBytes=" + readBytes +
+				", actualWriteBytes=" + actualWriteBytes +
+				", closedGracefully=" + closedGracefully +
+				", readOperations=" + readOperations +
+				", writeOperations=" + writeOperations +
+				", allowExternalSymlinks=" + allowExternalSymlinks +
+				", useDSESize=" + useDSESize +
+				", useDSECapacity=" + useDSECapacity +
+				", usePerfMon=" + usePerfMon +
+				", perfMonFile='" + perfMonFile + '\'' +
+				", writer=" + writer +
+				", ioMeter=" + ioMeter +
+				", configPath='" + configPath + '\'' +
+				", uuid='" + uuid + '\'' +
+				", clusterCopies=" + clusterCopies +
+				", clusterRackAware=" + clusterRackAware +
+				", writeErrors=" + writeErrors +
+				", readErrors=" + readErrors +
+				", serialNumber=" + serialNumber +
+				", volumeFull=" + volumeFull +
+				", dataCenter='" + dataCenter + '\'' +
+				", volumeOffLine=" + volumeOffLine +
+				", clustered=" + clustered +
+				", devices=" + devices +
+				", devLock=" + devLock +
+				", connicalPath='" + connicalPath + '\'' +
+				", ignite=" + ignite +
+				", car=" + Arrays.toString(car) +
+				'}';
 	}
 }
