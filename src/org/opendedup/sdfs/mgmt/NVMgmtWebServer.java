@@ -15,6 +15,7 @@ import org.opendedup.sdfs.io.Volume;
 import org.opendedup.sdfs.mgmt.cli.MgmtServerConnection;
 import org.opendedup.sdfs.mgmt.websocket.PingService;
 import org.opendedup.util.FindOpenPort;
+import org.opendedup.util.XMLUtils;
 import org.simpleframework.common.buffer.FileAllocator;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
@@ -142,17 +143,17 @@ public class NVMgmtWebServer implements Container {
                         Formatter formatter = new Formatter(sb);
                         formatter.format("cmd=version");
                         Document document = MgmtServerConnection.getResponse(sb.toString());
-                        Element root = document.getDocumentElement();
+                        Element rootInternal = document.getDocumentElement();
                         //Element msg = root.getAttribute("msg");
-                        System.out.println(root.getAttribute("msg"));
-                        System.out.println("-----> " + root.getAttribute("version-info"));
-                        if (root.getAttribute("status").equalsIgnoreCase("success")) {
-                            Element versionInfoElem = (Element) root.getElementsByTagName("version-info").item(0);
+                        System.out.println(rootInternal.getAttribute("msg"));
+                        System.out.println("-----> " + rootInternal.getAttribute("version-info"));
+                        if (rootInternal.getAttribute("status").equalsIgnoreCase("success")) {
+                            Element versionInfoElem = (Element) rootInternal.getElementsByTagName("version-info").item(0);
                             System.out.println("=====> " + versionInfoElem.getAttribute("version"));
                         }
-                        result.setAttribute("status", root.getAttribute("status"));
-                        result.setAttribute("msg", root.getAttribute("msg"));
-                        result.appendChild(doc.adoptNode(root));
+                        result.setAttribute("status", rootInternal.getAttribute("status"));
+                        result.setAttribute("msg", rootInternal.getAttribute("msg"));
+                        result.appendChild(doc.adoptNode(rootInternal));
                         System.out.println("document = " + document);
                     }
                     break;
@@ -177,7 +178,17 @@ public class NVMgmtWebServer implements Container {
                         result.setAttribute("status", "failed");
                         result.setAttribute("msg", "no command specified");
                 }
+                String rsString = XMLUtils.toXMLString(doc);
+
+                // SDFSLogger.getLog().debug(rsString);
+                response.setContentType("text/xml");
+                byte[] rb = rsString.getBytes();
+                response.setContentLength(rb.length);
+                response.getOutputStream().write(rb);
+                response.getOutputStream().flush();
+                response.close();
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
