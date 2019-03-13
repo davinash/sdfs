@@ -13,7 +13,7 @@ public class Version {
     public Element getResult(String cmd, String file) throws IOException {
         System.out.println("Main.version = " + Main.version);
         try {
-            return (Element) this.toXMLDocument(Main.version).getDocumentElement()
+            return (Element) this.toXMLDocument(new String(Main.version)).getDocumentElement()
                     .cloneNode(true);
         } catch (Exception e) {
             e.printStackTrace();
